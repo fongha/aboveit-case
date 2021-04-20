@@ -4,7 +4,6 @@ import { Table } from "./components/Table.js";
 import axios from "axios";
 import styles from './App.module.css';
 
-// 1. Hent API
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -12,13 +11,7 @@ class App extends React.Component {
       bitcoins: [],
     };
   }
-/*
-  async getBitcoinAPI() {
-    const { data: bitcoins } = await axios.get(
-      "https://min-api.cryptocompare.com/data/v2/histoday?fsym=BTC&tsym=USD&limit=100&api_key=8ae55d463e1bf8d38b4a502ca47512f9b1dec21533ad9af7acb993e8ba952bc2"
-    );
-    this.setState({ bitcoins });
-  }*/
+
   async componentDidMount() {
     await axios.get(
       "https://min-api.cryptocompare.com/data/v2/histoday?fsym=BTC&tsym=USD&limit=100&api_key=8ae55d463e1bf8d38b4a502ca47512f9b1dec21533ad9af7acb993e8ba952bc2"
