@@ -1,30 +1,26 @@
 import React, { useState } from "react";
+import { TableComponent } from "./TableComponent.js";
+import styles from "../App.module.css";
 
-const renderData = (props) => {
-  return (
-    <ul>
-      {props.data.map((bitcoins, index) => {
-        return <li key={index}>{bitcoins.time}</li>;
-      })}
-    </ul>
-  );
+const renderData = (currentPage) => {
+  return <TableComponent data={currentPage} />;
 };
 
-export function Pagination(props) {
+export const Pagination = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setitemsPerPage] = useState(20);
-  const [pageNumberLimit, setpageNumberLimit] = useState(5);
   const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(5);
   const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
+  const itemsPerPage = 20;
+  const pageNumberLimit = 5;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = props.data.slice(indexOfFirstItem, indexOfLastItem);
 
   const pages = [];
   for (let i = 1; i <= Math.ceil(props.data.length / itemsPerPage); i++) {
     pages.push(i);
   }
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems= props.data.slice(indexOfFirstItem, indexOfLastItem);
   const handleClick = (event) => {
     setCurrentPage(Number(event.target.id));
   };
@@ -36,7 +32,7 @@ export function Pagination(props) {
           key={number}
           id={number}
           onClick={handleClick}
-          className={currentPage == number ? "active" : null}
+          className={currentPage === number ? styles.active : null}
         >
           {number}
         </li>
@@ -46,7 +42,7 @@ export function Pagination(props) {
     }
   });
 
-  const handleNextbtn = () => {
+  const handleNextPage = () => {
     setCurrentPage(currentPage + 1);
 
     if (currentPage + 1 > maxPageNumberLimit) {
@@ -55,10 +51,10 @@ export function Pagination(props) {
     }
   };
 
-  const handlePrevbtn = () => {
+  const handlePrevPage = () => {
     setCurrentPage(currentPage - 1);
 
-    if ((currentPage - 1) % pageNumberLimit == 0) {
+    if ((currentPage - 1) % pageNumberLimit === 0) {
       setmaxPageNumberLimit(maxPageNumberLimit - pageNumberLimit);
       setminPageNumberLimit(minPageNumberLimit - pageNumberLimit);
     }
@@ -66,28 +62,24 @@ export function Pagination(props) {
 
   return (
     <div>
-      <h1>Testing</h1>
-      {renderData(props)}
-      <ul className="pageNumbers">
-        <li>
+      {renderData(currentItems)}
+      <div className={styles.pageNumbers}>
           <button
-            onClick={handlePrevbtn}
-            disabled={currentPage == pages[0] ? true : false}
+            className={styles.pageBtn}
+            onClick={handlePrevPage}
+            disabled={currentPage === pages[0] ? true : false}
           >
-            Previous page
+            &laquo;
           </button>
-          Current page: {currentPage}
-        </li>
         {renderPageNumbers}
-        <li>
           <button
-            onClick={handleNextbtn}
-            disabled={currentPage == pages[pages.length - 1] ? true : false}
+            className={styles.pageBtn}
+            onClick={handleNextPage}
+            disabled={currentPage === pages[pages.length - 1] ? true : false}
           >
-            Next page
+            &raquo;
           </button>
-        </li>
-      </ul>
+      </div>
     </div>
   );
 }
